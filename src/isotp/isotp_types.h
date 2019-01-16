@@ -12,6 +12,8 @@
 // here - for most multi-frame use cases, 256 bytes is plenty.
 #define OUR_MAX_ISO_TP_MESSAGE_SIZE 127
 
+#define ANY_ARBITRATION_ID 0xFFFFFFFF
+
 /* Private: IsoTp nibble specifics for PCI and Payload.
  */
 #define PCI_NIBBLE_INDEX 0

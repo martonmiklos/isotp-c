@@ -43,7 +43,9 @@ IsoTpReceiveHandle isotp_receive(IsoTpShims* shims,
         success: false,
         completed: false,
         arbitration_id: arbitration_id,
-        message_received_callback: callback
+        message_received_callback: callback,
+        arbitration_id_received: false,
+        receive_any_arbitration_id: (arbitration_id == ANY_ARBITRATION_ID)
     };
 
     return handle;
@@ -65,14 +67,19 @@ IsoTpMessage isotp_continue_receive(IsoTpShims* shims,
     }
 
     if(handle->arbitration_id != arbitration_id) {
-        if(shims->log != NULL)  {
-            // You may turn this on for debugging, but in normal operation it's
-            // very noisy if you are passing all received CAN messages to this
-            // handler.
-            /* shims->log("The arb ID 0x%x doesn't match the expected rx ID 0x%x", */
-                    /* arbitration_id, handle->arbitration_id); */
+        if (handle->receive_any_arbitration_id && !handle->arbitration_id_received) {
+          handle->arbitration_id_received = true;
+          handle->arbitration_id = arbitration_id;
+        } else {
+          if(shims->log != NULL)  {
+              // You may turn this on for debugging, but in normal operation it's
+              // very noisy if you are passing all received CAN messages to this
+              // handler.
+              /* shims->log("The arb ID 0x%x doesn't match the expected rx ID 0x%x", */
+                      /* arbitration_id, handle->arbitration_id); */
+          }
+          return message;
         }
-        return message;
     }
 
     IsoTpProtocolControlInformation pci = (IsoTpProtocolControlInformation)

@@ -23,6 +23,8 @@ extern "C" {
 typedef struct {
     bool completed;
     bool success;
+    bool receive_any_arbitration_id;
+    bool arbitration_id_received;
 
     // Private
     uint32_t arbitration_id;
